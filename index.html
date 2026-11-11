@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPK Weighted Product (WP) - Light Glassmorphism UI</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CDN Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- CDN Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- CDN PapaParse JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    
+    /* Custom delicate scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(241, 245, 249, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.7);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-100 via-teal-50/40 to-emerald-100/50 min-h-screen font-sans text-slate-800 antialiased selection:bg-teal-200 selection:text-teal-900 relative overflow-x-hidden">
+
+  <!-- Ambient Light Orbs for Glassmorphism Depth -->
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+  <div class="fixed bottom-10 right-10 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
+  <div class="fixed top-1/2 right-1/3 w-80 h-80 bg-cyan-200/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- ========================================== -->
+  <!-- 1. DESKTOP FIXED GLASS SIDEBAR             -->
+  <!-- ========================================== -->
+  <aside id="desktop-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white/70 backdrop-blur-md border-r border-white/80 shadow-xl shadow-slate-200/50 z-30 hidden lg:flex flex-col justify-between p-6">
+    <div class="flex flex-col space-y-8">
+      <!-- App Brand Logo -->
+      <div class="flex items-center space-x-3.5 px-2">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-teal-500/25 ring-1 ring-white/60">
+          <i data-lucide="scale" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-teal-950 to-emerald-900 bg-clip-text text-transparent">SPK-WP Studio</h1>
+          <p class="text-xs font-medium text-slate-500">Weighted Product Engine</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs Menu -->
+      <nav class="space-y-2" aria-label="Navigasi Utama">
+        <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-600">Alur Keputusan</p>
+        
+        <!-- Nav Item 1: Data -->
+        <button id="nav-btn-data" data-tab-target="tab-data" class="tab-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-md shadow-teal-500/20">
+          <i data-lucide="database" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">1. Dataset CSV</span>
+          <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white">Input</span>
+        </button>
+
+        <!-- Nav Item 2: Kriteria -->
+        <button id="nav-btn-kriteria" data-tab-target="tab-kriteria" class="tab-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+          <i data-lucide="sliders" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">2. Kriteria & Bobot</span>
+          <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Bobot</span>
+        </button>
+
+        <!-- Nav Item 3: Proses -->
+        <button id="nav-btn-proses" data-tab-target="tab-proses" class="tab-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+          <i data-lucide="cpu" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">3. Proses WP</span>
+          <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Vektor S/V</span>
+        </button>
+
+        <!-- Nav Item 4: Ranking -->
+        <button id="nav-btn-ranking" data-tab-target="tab-ranking" class="tab-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+          <i data-lucide="trophy" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">4. Hasil & Ranking</span>
+          <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Juara #1</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Sidebar Bottom Card Info -->
+    <div class="bg-white/50 backdrop-blur-sm border border-white/80 rounded-2xl p-4 shadow-sm">
+      <div class="flex items-center space-x-2 text-teal-700 mb-2">
+        <i data-lucide="info" class="w-4 h-4"></i>
+        <span class="text-xs font-bold uppercase tracking-wider">Formula Inti WP</span>
+      </div>
+      <p class="text-xs text-slate-600 leading-relaxed font-mono">
+        S<sub>i</sub> = &prod; (X<sub>ij</sub>)<sup>&plusmn;w<sub>j</sub></sup><br>
+        V<sub>i</sub> = S<sub>i</sub> / &sum; S<sub>k</sub>
+      </p>
+      <div class="mt-3 pt-3 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-600">
+        <span>Kelompok 5</span>
+        <span class="font-medium text-emerald-600">SPK SI23B</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================== -->
+  <!-- 2. MOBILE TOPBAR & OFF-CANVAS DRAWER       -->
+  <!-- ========================================== -->
+  <!-- Mobile Fixed Topbar -->
+  <header class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md border-b border-white/80 px-4 flex items-center justify-between z-20 shadow-sm">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-teal-500/20">
+        <i data-lucide="scale" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h1 class="text-base font-bold text-slate-800 leading-tight">SPK-WP Studio</h1>
+        <p class="text-[11px] text-slate-500 font-medium">Weighted Product</p>
+      </div>
+    </div>
+
+    <button id="mobile-drawer-toggle" aria-label="Buka Navigasi" class="p-2.5 rounded-xl bg-white/80 border border-slate-200/70 text-slate-700 hover:text-teal-600 hover:bg-teal-50/50 transition-all duration-300">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+  </header>
+
+  <!-- Mobile Drawer Backdrop Overlay -->
+  <div id="mobile-drawer-backdrop" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
+
+  <!-- Mobile Drawer Off-Canvas Menu -->
+  <div id="mobile-drawer" class="fixed inset-y-0 left-0 w-72 bg-white/95 backdrop-blur-2xl border-r border-white/80 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between p-6">
+    <div class="space-y-6">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-teal-500/20">
+            <i data-lucide="scale" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">SPK-WP Studio</h2>
+            <p class="text-xs text-slate-600">Weighted Product</p>
+          </div>
+        </div>
+        <button id="mobile-drawer-close" aria-label="Tutup Navigasi" class="p-2 rounded-lg text-slate-600 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      <nav class="space-y-2">
+        <button data-tab-target="tab-data" class="tab-nav-btn mobile-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-md">
+          <i data-lucide="database" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">1. Dataset CSV</span>
+          <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-white/20">Input</span>
+        </button>
+
+        <button data-tab-target="tab-kriteria" class="tab-nav-btn mobile-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+          <i data-lucide="sliders" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">2. Kriteria & Bobot</span>
+        </button>
+
+        <button data-tab-target="tab-proses" class="tab-nav-btn mobile-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+          <i data-lucide="cpu" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">3. Proses WP</span>
+        </button>
+
+        <button data-tab-target="tab-ranking" class="tab-nav-btn mobile-nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-600 hover:text-slate-900 hover:bg-white/60">
+          <i data-lucide="trophy" class="w-4 h-4"></i>
+          <span class="flex-1 text-left">4. Hasil & Ranking</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Mobile Drawer Footer -->
+    <div class="bg-white/60 border border-white/80 rounded-xl p-3 text-xs text-slate-600">
+      <p class="font-medium text-slate-700">Metode Weighted Product</p>
+      <p class="text-[11px] mt-0.5">Sistem Pendukung Keputusan Berbasis Multi-Atribut</p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. MAIN CONTENT CONTAINER                  -->
+  <!-- ========================================== -->
+  <main class="lg:ml-72 min-h-screen flex flex-col pt-20 lg:pt-8 pb-12 px-4 sm:px-6 lg:px-10 max-w-7xl">
+    
+    <!-- Top Action / Context Header -->
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div>
+        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-teal-100/70 border border-teal-200/80 text-teal-800 text-xs font-semibold mb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Sistem Pendukung Keputusan Multi-Kriteria</span>
+        </div>
+        <h2 id="active-tab-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Dataset & Upload CSV</h2>
+        <p id="active-tab-desc" class="text-sm text-slate-600 mt-1">Unggah berkas CSV alternatif supplier/kandidat untuk memulai analisis Weighted Product.</p>
+      </div>
+
+      <!-- Quick Actions Header Buttons -->
+      <div class="flex items-center space-x-3">
+        <button id="btn-load-sample-header" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/70 backdrop-blur-md border border-white/80 shadow-md shadow-slate-200/50 text-slate-700 text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-teal-700">
+          <i data-lucide="sparkles" class="w-4 h-4 text-teal-600"></i>
+          <span>Sample 5 Supplier</span>
+        </button>
+
+        <button id="btn-reset-all" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white/70 backdrop-blur-md border border-white/80 shadow-md shadow-slate-200/50 text-rose-600 text-xs font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:bg-rose-50/70 hover:border-rose-200">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>Reset Data</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Global Notification Banner -->
+    <div id="global-notification" class="hidden mb-6 rounded-2xl p-4 bg-teal-50/80 backdrop-blur-md border border-teal-200 shadow-sm flex items-center justify-between text-sm text-teal-900">
+      <div class="flex items-center space-x-3">
+        <i data-lucide="check-circle" class="w-5 h-5 text-teal-600"></i>
+        <span id="global-notification-msg">Data berhasil diproses.</span>
+      </div>
+      <button id="btn-dismiss-notification" class="text-teal-700 hover:text-teal-900">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: #tab-data (Upload CSV, Stat Cards, Preview Tabel)  -->
+    <!-- ======================================================== -->
+    <section id="tab-data" class="tab-content block space-y-6">
+      
+      <!-- 1.1 Dropzone Upload CSV (Dashed Translucent Border) -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">Upload Berkas Dataset CSV</h3>
+            <p class="text-xs text-slate-600">Gunakan format file .CSV dengan delimiter koma (,) dan baris pertama sebagai nama atribut/kriteria.</p>
+          </div>
+          <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-50 text-teal-700 border border-teal-200/60">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 mr-1.5"></i>
+            Format .CSV
+          </span>
+        </div>
+
+        <!-- Dropzone Box -->
+        <div id="csv-dropzone" class="border-2 border-dashed border-teal-300/70 hover:border-teal-500 bg-teal-50/20 hover:bg-white/80 backdrop-blur-md rounded-2xl p-8 sm:p-10 text-center cursor-pointer transition-all duration-300 group relative">
+          <!-- Hidden File Input -->
+          <input type="file" id="csv-file-input" accept=".csv,text/csv" class="hidden">
+
+          <div class="flex flex-col items-center justify-center space-y-3.5">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-teal-100 to-emerald-100 border border-teal-200 flex items-center justify-center text-teal-600 shadow-inner group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="upload-cloud" class="w-8 h-8 group-hover:text-teal-700 transition-colors"></i>
+            </div>
+            
+            <div class="space-y-1">
+              <p class="text-base font-bold text-slate-800">
+                <span class="text-teal-600 underline underline-offset-2">Klik untuk memilih file</span> atau seret file CSV ke sini
+              </p>
+              <p class="text-xs text-slate-600">Mendukung file CSV standar UTF-8 (Maksimal 5MB)</p>
+            </div>
+
+            <!-- Quick Action Buttons Inside Dropzone -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <button type="button" id="btn-browse-file" class="px-4 py-2 rounded-xl bg-teal-600 text-white text-xs font-semibold shadow-md shadow-teal-600/25 hover:bg-teal-700 transition-colors flex items-center space-x-2">
+                <i data-lucide="folder-open" class="w-3.5 h-3.5"></i>
+                <span>Pilih Berkas CSV</span>
+              </button>
+              <button type="button" id="btn-load-sample" class="px-4 py-2 rounded-xl bg-white/80 border border-teal-200 text-teal-800 text-xs font-semibold hover:bg-white transition-colors flex items-center space-x-2 shadow-sm">
+                <i data-lucide="file-text" class="w-3.5 h-3.5 text-teal-600"></i>
+                <span>Gunakan Data Supplier Default</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Loaded File Info Bar (Hidden by default, shown when loaded) -->
+        <div id="loaded-file-bar" class="hidden mt-4 p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 flex items-center justify-between text-xs text-emerald-900">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-emerald-200/60 flex items-center justify-center text-emerald-700">
+              <i data-lucide="file-check-2" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <p id="file-info-name" class="font-bold text-emerald-950">sample_supplier_default_5.csv</p>
+              <p id="file-info-meta" class="text-[11px] text-emerald-700">5 baris alternatif &bull; 6 kolom</p>
+            </div>
+          </div>
+          <button id="btn-clear-file" class="px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 font-semibold transition-colors flex items-center space-x-1">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Hapus File</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 1.2 Stat Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Total Alternatif -->
+        <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-600">Total Alternatif</p>
+            <h4 id="stat-alternatives" class="text-2xl font-extrabold text-slate-900 mt-1">0</h4>
+            <p class="text-[11px] text-slate-600 mt-0.5">Baris data kandidat</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-teal-100/70 text-teal-700 flex items-center justify-center border border-teal-200/50">
+            <i data-lucide="users" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <!-- Card 2: Total Kriteria Terdeteksi -->
+        <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-600">Total Kriteria</p>
+            <h4 id="stat-criteria" class="text-2xl font-extrabold text-slate-900 mt-1">0</h4>
+            <p class="text-[11px] text-slate-600 mt-0.5">Kolom kriteria evaluasi</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100/70 text-emerald-700 flex items-center justify-center border border-emerald-200/50">
+            <i data-lucide="sliders-horizontal" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <!-- Card 3: Status Validasi -->
+        <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-600">Status Validasi</p>
+            <h4 id="stat-status" class="text-lg font-bold text-amber-600 mt-1">Menunggu CSV</h4>
+            <p class="text-[11px] text-slate-600 mt-0.5">Kelengkapan format</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-amber-100/70 text-amber-700 flex items-center justify-center border border-amber-200/50">
+            <i data-lucide="shield-alert" class="w-6 h-6"></i>
+          </div>
+        </div>
+
+        <!-- Card 4: Total Kolom Dataset -->
+        <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-600">Total Kolom</p>
+            <h4 id="stat-columns" class="text-2xl font-extrabold text-slate-900 mt-1">0</h4>
+            <p class="text-[11px] text-slate-600 mt-0.5">Identitas & bobot</p>
+          </div>
+          <div class="w-12 h-12 rounded-2xl bg-cyan-100/70 text-cyan-700 flex items-center justify-center border border-cyan-200/50">
+            <i data-lucide="table-properties" class="w-6 h-6"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.3 Container Tabel Preview CSV -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div class="flex items-center space-x-2.5">
+            <div class="p-2 rounded-xl bg-teal-100/70 text-teal-700">
+              <i data-lucide="table" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Preview Data Mentah CSV</h3>
+              <p class="text-xs text-slate-600">Pastikan seluruh data alternatif dan nilai kriteria telah termuat dengan benar.</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-600"></i>
+              <input type="text" id="search-preview-csv" placeholder="Cari baris data..." class="pl-9 pr-3 py-1.5 rounded-xl bg-white/80 border border-slate-200/80 text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400/50">
+            </div>
+            <span id="badge-csv-rows" class="text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60">0 Data</span>
+          </div>
+        </div>
+
+        <!-- Tabel Wrapper dengan Class Wajib overflow-x-auto w-full -->
+        <div class="overflow-x-auto w-full rounded-xl border border-white/80 bg-white/50 shadow-inner">
+          <table id="table-csv-preview" class="min-w-full text-left text-xs sm:text-sm divide-y divide-slate-200/70">
+            <thead id="thead-csv-preview" class="bg-slate-100/70 font-semibold text-slate-700 tracking-wider">
+              <tr>
+                <th scope="col" class="py-3 px-4 text-center text-slate-600">#</th>
+                <th scope="col" class="py-3 px-4 text-slate-600">Status</th>
+                <th scope="col" class="py-3 px-4 text-slate-600">Kolom 1</th>
+                <th scope="col" class="py-3 px-4 text-slate-600">Kolom 2</th>
+                <th scope="col" class="py-3 px-4 text-slate-600">Kolom 3</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-csv-preview" class="divide-y divide-slate-100 text-slate-700">
+              <tr id="empty-row-preview">
+                <td colspan="5" class="py-12 text-center text-slate-600">
+                  <div class="flex flex-col items-center justify-center space-y-2">
+                    <i data-lucide="inbox" class="w-8 h-8 text-slate-300"></i>
+                    <p class="text-sm font-medium">Belum ada file CSV yang dimuat</p>
+                    <p class="text-xs text-slate-600">Silakan unggah file CSV atau klik tombol &quot;Gunakan Data Supplier Default&quot;.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls Bar -->
+        <div id="csv-preview-pagination" class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600"></div>
+
+        <!-- Next Step Button -->
+        <div class="mt-6 flex justify-end">
+          <button id="btn-to-kriteria" data-tab-target="tab-kriteria" class="tab-nav-btn px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-semibold text-xs shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 flex items-center space-x-2">
+            <span>Lanjut: Mapping & Bobot Kriteria</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: #tab-kriteria (Mapping, Bobot W_j, Normalisasi w_j) -->
+    <!-- ======================================================== -->
+    <section id="tab-kriteria" class="tab-content hidden space-y-6">
+
+      <!-- 2.1 Form Mapping Kolom Alternatif -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="p-2 rounded-xl bg-teal-100/70 text-teal-700">
+            <i data-lucide="columns-3" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">1. Pemetaan Kolom Identitas Alternatif</h3>
+            <p class="text-xs text-slate-600">Pilih kolom identitas unik dan nama alternatif. Kolom numerik sisanya otomatis dideteksi sebagai kriteria.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Mapping Kolom Kode/ID -->
+          <div class="space-y-1.5">
+            <label for="select-col-code" class="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+              <span>Kolom Kode / ID Alternatif</span>
+              <span class="text-rose-500">*</span>
+            </label>
+            <select id="select-col-code" class="w-full px-3.5 py-2.5 rounded-xl bg-white/80 border border-slate-200 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-400/50">
+              <option value="">-- Pilih Kolom Kode --</option>
+            </select>
+            <p class="text-[11px] text-slate-600">Contoh: Kode_Supplier, ID_Karyawan, No_Kandidat</p>
+          </div>
+
+          <!-- Mapping Kolom Nama Alternatif -->
+          <div class="space-y-1.5">
+            <label for="select-col-name" class="text-xs font-bold text-slate-700 flex items-center space-x-1.5">
+              <span>Kolom Nama Alternatif / Supplier</span>
+              <span class="text-rose-500">*</span>
+            </label>
+            <select id="select-col-name" class="w-full px-3.5 py-2.5 rounded-xl bg-white/80 border border-slate-200 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-400/50">
+              <option value="">-- Pilih Kolom Nama --</option>
+            </select>
+            <p class="text-[11px] text-slate-600">Contoh: Nama_Supplier, Nama_Calon, Nama_Barang</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2.2 Kartu Pengaturan Bobot W_j (Benefit / Cost) -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 rounded-xl bg-emerald-100/70 text-emerald-700">
+              <i data-lucide="sliders" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900">2. Pengaturan Bobot Awal (W<sub>j</sub>) & Tipe Kriteria</h3>
+              <p class="text-xs text-slate-600">Tentukan nilai bobot kepentingan (1-5) dan klasifikasi sifat kriteria (Benefit atau Cost).</p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <div class="px-3.5 py-1.5 rounded-xl bg-teal-100/70 border border-teal-200/80 text-teal-800 text-xs font-bold flex items-center space-x-1.5">
+              <span>Total Bobot (&sum;W):</span>
+              <span id="badge-total-initial-weight" class="text-teal-950 font-extrabold text-sm">0</span>
+            </div>
+            <button id="btn-equalize-weights" class="px-3 py-1.5 rounded-xl bg-white/80 border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-white hover:text-teal-700 transition-colors">
+              Bobot Sama
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Container for Criteria Weight Cards -->
+        <div id="criteria-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Placeholder Empty State -->
+          <div class="col-span-full py-10 text-center text-slate-600 bg-white/40 border border-dashed border-slate-200 rounded-xl">
+            <i data-lucide="layers" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+            <p class="text-xs font-medium">Kriteria akan otomatis muncul setelah CSV dimuat</p>
+          </div>
+        </div>
+
+        <!-- Action Normalisasi Bobot -->
+        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
+          <p class="text-xs text-slate-600">Klik tombol di samping untuk mengunci nilai dan menghitung normalisasi bobot w<sub>j</sub>.</p>
+          <button id="btn-normalize-weights" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-teal-600 text-white font-semibold text-xs shadow-md shadow-teal-600/25 hover:bg-teal-700 transition-all flex items-center justify-center space-x-2">
+            <i data-lucide="calculator" class="w-4 h-4"></i>
+            <span>Normalisasikan Bobot Kriteria</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2.3 Tabel Normalisasi Bobot w_j -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 rounded-xl bg-cyan-100/70 text-cyan-700">
+              <i data-lucide="sigma" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900">3. Tabel Hasil Normalisasi Bobot (w<sub>j</sub>)</h3>
+              <p class="text-xs text-slate-600">Rumus: w<sub>j</sub> = W<sub>j</sub> / &sum; W<sub>k</sub>. Sifat Benefit bernilai (+w<sub>j</sub>) dan Cost bernilai (-w<sub>j</sub>).</p>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100/70 text-emerald-800 border border-emerald-200">
+            &sum; w<sub>j</sub> = 1.0000
+          </span>
+        </div>
+
+        <!-- Tabel Wrapper dengan Class Wajib overflow-x-auto w-full -->
+        <div class="overflow-x-auto w-full rounded-xl border border-white/80 bg-white/50 shadow-inner">
+          <table id="table-normalized-weights" class="min-w-full text-left text-xs sm:text-sm divide-y divide-slate-200/70">
+            <thead class="bg-slate-100/70 font-semibold text-slate-700 tracking-wider">
+              <tr>
+                <th scope="col" class="py-3 px-4 text-center">No</th>
+                <th scope="col" class="py-3 px-4">Kode</th>
+                <th scope="col" class="py-3 px-4">Nama Kriteria</th>
+                <th scope="col" class="py-3 px-4">Tipe Atribut</th>
+                <th scope="col" class="py-3 px-4 text-right">Bobot Awal (W<sub>j</sub>)</th>
+                <th scope="col" class="py-3 px-4 text-right">Bobot Ternormalisasi (w<sub>j</sub>)</th>
+                <th scope="col" class="py-3 px-4 text-center">Eksponen Pangkat (&plusmn;w<sub>j</sub>)</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-normalized-weights" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-600 text-xs">
+                  Normalisasikan bobot terlebih dahulu untuk menampilkan data tabel.
+                </td>
+              </tr>
+            </tbody>
+            <tfoot id="tfoot-normalized-weights" class="bg-slate-50/80 font-bold text-slate-800">
+              <tr>
+                <td colspan="4" class="py-3 px-4 text-right">Total:</td>
+                <td id="tfoot-total-raw-w" class="py-3 px-4 text-right">0</td>
+                <td id="tfoot-total-norm-w" class="py-3 px-4 text-right">0.0000</td>
+                <td class="py-3 px-4 text-center text-emerald-600">&radic; Valid</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Next Step Button -->
+        <div class="mt-6 flex justify-between items-center">
+          <button data-tab-target="tab-data" class="tab-nav-btn text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-1">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Kembali ke Data</span>
+          </button>
+          <button id="btn-to-proses" data-tab-target="tab-proses" class="tab-nav-btn px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-semibold text-xs shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 flex items-center space-x-2">
+            <span>Lanjut: Hitung Komputasi WP</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: #tab-proses (Step-by-step WP: Matriks, S, V)       -->
+    <!-- ======================================================== -->
+    <section id="tab-proses" class="tab-content hidden space-y-6">
+
+      <!-- Process Header Controls -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Transparansi Tahapan Komputasi WP</h3>
+          <p class="text-xs text-slate-600">Perhitungan matematis Weighted Product dilakukan secara bertahap mulai dari matriks data hingga vektor preferensi V.</p>
+        </div>
+        <button id="btn-recalculate-wp" class="px-5 py-2.5 rounded-xl bg-teal-600 text-white font-semibold text-xs shadow-md shadow-teal-600/25 hover:bg-teal-700 transition-all flex items-center space-x-2">
+          <i data-lucide="play" class="w-4 h-4"></i>
+          <span>Jalankan Perhitungan WP</span>
+        </button>
+      </div>
+
+      <!-- 3.1 Step 1: Matriks Keputusan X -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <span class="w-7 h-7 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">1</span>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900">Matriks Keputusan (X<sub>ij</sub>)</h4>
+              <p class="text-xs text-slate-600">Representasi nilai kriteria asli tiap alternatif yang siap dievaluasi.</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">Matriks X</span>
+        </div>
+
+        <!-- Tabel Wrapper dengan Class Wajib overflow-x-auto w-full -->
+        <div class="overflow-x-auto w-full rounded-xl border border-white/80 bg-white/50 shadow-inner">
+          <table id="table-matrix-x" class="min-w-full text-left text-xs sm:text-sm divide-y divide-slate-200/70">
+            <thead id="thead-matrix-x" class="bg-slate-100/70 font-semibold text-slate-700 tracking-wider">
+              <tr>
+                <th scope="col" class="py-3 px-4">Kode</th>
+                <th scope="col" class="py-3 px-4">Nama Alternatif</th>
+                <th scope="col" class="py-3 px-4 text-right">Kriteria 1</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-matrix-x" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="3" class="py-6 text-center text-slate-600 text-xs">Jalankan proses untuk memuat matriks X.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3.2 Step 2: Perhitungan Vektor S -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <span class="w-7 h-7 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">2</span>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900">Perhitungan Vektor Preferensi (S<sub>i</sub>)</h4>
+              <p class="text-xs text-slate-600">Rumus: S<sub>i</sub> = &prod; (X<sub>ij</sub>)<sup>w<sub>j</sub></sup> (Pangkat positif jika Benefit, pangkat negatif jika Cost).</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-mono font-semibold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-lg">
+              Total &sum; S<sub>i</sub>: <span id="label-total-s">0.0000</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Tabel Wrapper dengan Class Wajib overflow-x-auto w-full -->
+        <div class="overflow-x-auto w-full rounded-xl border border-white/80 bg-white/50 shadow-inner">
+          <table id="table-vector-s" class="min-w-full text-left text-xs sm:text-sm divide-y divide-slate-200/70">
+            <thead id="thead-vector-s" class="bg-slate-100/70 font-semibold text-slate-700 tracking-wider">
+              <tr>
+                <th scope="col" class="py-3 px-4 text-center">No</th>
+                <th scope="col" class="py-3 px-4">Kode</th>
+                <th scope="col" class="py-3 px-4">Nama Alternatif</th>
+                <th scope="col" class="py-3 px-4">Perkalian Pangkat Terurai</th>
+                <th scope="col" class="py-3 px-4 text-right">Nilai Vektor S<sub>i</sub></th>
+              </tr>
+            </thead>
+            <tbody id="tbody-vector-s" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="5" class="py-6 text-center text-slate-600 text-xs">Jalankan proses untuk menghitung vektor S.</td>
+              </tr>
+            </tbody>
+            <tfoot id="tfoot-vector-s" class="bg-slate-50/80 font-bold text-slate-800">
+              <tr>
+                <td colspan="4" class="py-3 px-4 text-right">Total Penjumlahan &sum; S<sub>i</sub>:</td>
+                <td id="tfoot-sum-s" class="py-3 px-4 text-right text-teal-700">0.0000</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3.3 Step 3: Perhitungan Vektor V -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <span class="w-7 h-7 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">3</span>
+            <div>
+              <h4 class="text-sm font-bold text-slate-900">Perhitungan Preferensi Relatif (Vektor V<sub>i</sub>)</h4>
+              <p class="text-xs text-slate-600">Rumus: V<sub>i</sub> = S<sub>i</sub> / &sum; S<sub>k</sub>. Nilai V<sub>i</sub> merefleksikan probabilitas preferensi alternatif.</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-lg">
+            &sum; V<sub>i</sub> = 1.0000
+          </span>
+        </div>
+
+        <!-- Tabel Wrapper dengan Class Wajib overflow-x-auto w-full -->
+        <div class="overflow-x-auto w-full rounded-xl border border-white/80 bg-white/50 shadow-inner">
+          <table id="table-vector-v" class="min-w-full text-left text-xs sm:text-sm divide-y divide-slate-200/70">
+            <thead id="thead-vector-v" class="bg-slate-100/70 font-semibold text-slate-700 tracking-wider">
+              <tr>
+                <th scope="col" class="py-3 px-4 text-center">No</th>
+                <th scope="col" class="py-3 px-4">Kode</th>
+                <th scope="col" class="py-3 px-4">Nama Alternatif</th>
+                <th scope="col" class="py-3 px-4 text-right">Nilai S<sub>i</sub></th>
+                <th scope="col" class="py-3 px-4 text-right">Pembagi (&sum; S)</th>
+                <th scope="col" class="py-3 px-4 text-right">Nilai Vektor V<sub>i</sub></th>
+                <th scope="col" class="py-3 px-4 text-right">Persentase</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-vector-v" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="7" class="py-6 text-center text-slate-600 text-xs">Jalankan proses untuk menghitung vektor V.</td>
+              </tr>
+            </tbody>
+            <tfoot id="tfoot-vector-v" class="bg-slate-50/80 font-bold text-slate-800">
+              <tr>
+                <td colspan="5" class="py-3 px-4 text-right">Total &sum; V<sub>i</sub>:</td>
+                <td id="tfoot-sum-v" class="py-3 px-4 text-right text-emerald-700">0.0000</td>
+                <td id="tfoot-sum-percent" class="py-3 px-4 text-right text-emerald-700">100.0%</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Next Step Button -->
+        <div class="mt-6 flex justify-between items-center">
+          <button data-tab-target="tab-kriteria" class="tab-nav-btn text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-1">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Kembali ke Kriteria</span>
+          </button>
+          <button id="btn-to-ranking" data-tab-target="tab-ranking" class="tab-nav-btn px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-semibold text-xs shadow-lg shadow-teal-500/25 hover:from-teal-600 hover:to-emerald-600 transition-all duration-300 flex items-center space-x-2">
+            <span>Lihat Hasil Juara & Ranking</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: #tab-ranking (Glowing Hero Rank #1 & Tabel Ranking) -->
+    <!-- ======================================================== -->
+    <section id="tab-ranking" class="tab-content hidden space-y-6">
+
+      <!-- 4.1 Glowing Emerald Glass Hero Card untuk Rank #1 (Pemenang Utama) -->
+      <div id="hero-winner-card" class="bg-gradient-to-r from-emerald-500/10 via-teal-500/15 to-emerald-500/10 backdrop-blur-md border-2 border-emerald-400/60 shadow-2xl shadow-emerald-500/20 rounded-3xl p-6 sm:p-8 relative overflow-hidden ring-1 ring-emerald-400/30 transition-all duration-300 hover:-translate-y-0.5">
+        <!-- Glowing Ambient Circles -->
+        <div class="absolute -right-12 -top-12 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-teal-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="space-y-3">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-extrabold uppercase tracking-wider shadow-md shadow-emerald-500/30">
+              <i data-lucide="crown" class="w-3.5 h-3.5"></i>
+              <span>Peringkat #1 &bull; Rekomendasi Terbaik</span>
+            </div>
+
+            <div>
+              <span id="hero-winner-code" class="text-xs font-mono font-bold text-emerald-800 bg-emerald-200/80 px-2 py-0.5 rounded-md">S000</span>
+              <h3 id="hero-winner-name" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Nama Alternatif Pemenang</h3>
+            </div>
+
+            <p id="hero-winner-desc" class="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
+              Alternatif ini memperoleh nilai preferensi Vektor V tertinggi setelah mengevaluasi seluruh atribut benefit dan cost dengan perkalian pangkat bobot.
+            </p>
+          </div>
+
+          <!-- Hero Winner Metric Badges -->
+          <div class="flex flex-row md:flex-col items-center md:items-end gap-3 w-full md:w-auto justify-between md:justify-center pt-4 md:pt-0 border-t md:border-t-0 border-emerald-200/60">
+            <div class="bg-white/80 backdrop-blur-md border border-emerald-300/60 rounded-2xl p-4 shadow-lg shadow-emerald-500/10 text-center md:text-right min-w-[160px]">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Nilai Vektor V</p>
+              <h4 id="hero-winner-score-v" class="text-3xl font-black text-emerald-600 tracking-tight">0.0000</h4>
+              <p id="hero-winner-percent" class="text-xs font-semibold text-slate-500 mt-0.5">Preferensi 0.0%</p>
+            </div>
+            
+            <div class="text-xs font-medium text-slate-600 text-right hidden sm:block">
+              Vektor S: <span id="hero-winner-score-s" class="font-bold text-slate-800">0.0000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4.2 Container Tabel Ranking Utama -->
+      <div class="bg-white/70 backdrop-blur-md border border-white/80 shadow-xl shadow-slate-200/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-0.5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 rounded-xl bg-amber-100/70 text-amber-700">
+              <i data-lucide="medal" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Tabel Peringkat Lengkap Alternatif</h3>
+              <p class="text-xs text-slate-600">Urutan prioritas alternatif berdasarkan nilai preferensi Vektor V tertinggi ke terendah.</p>
+            </div>
+          </div>
+
+          <!-- Action Buttons for Export -->
+          <div class="flex items-center space-x-2">
+            <button id="btn-export-csv" class="px-3.5 py-2 rounded-xl bg-white/80 border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-white hover:text-teal-700 transition-colors flex items-center space-x-1.5 shadow-sm">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Export CSV</span>
+            </button>
+            <button id="btn-print-ranking" class="px-3.5 py-2 rounded-xl bg-white/80 border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-white hover:text-teal-700 transition-colors flex items-center space-x-1.5 shadow-sm">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>Cetak Hasil</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabel Wrapper dengan Class Wajib overflow-x-auto w-full -->
+        <div class="overflow-x-auto w-full rounded-xl border border-white/80 bg-white/50 shadow-inner">
+          <table id="table-ranking" class="min-w-full text-left text-xs sm:text-sm divide-y divide-slate-200/70">
+            <thead class="bg-slate-100/70 font-semibold text-slate-700 tracking-wider">
+              <tr>
+                <th scope="col" class="py-3 px-4 text-center">Rank</th>
+                <th scope="col" class="py-3 px-4">Kode</th>
+                <th scope="col" class="py-3 px-4">Nama Alternatif</th>
+                <th scope="col" class="py-3 px-4 text-right">Vektor S<sub>i</sub></th>
+                <th scope="col" class="py-3 px-4 text-right">Vektor V<sub>i</sub> (Skor)</th>
+                <th scope="col" class="py-3 px-4 text-right">Kontribusi %</th>
+                <th scope="col" class="py-3 px-4 text-center">Status Rekomendasi</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-ranking" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-600 text-xs">
+                  Belum ada data peringkat. Selesaikan perhitungan pada tab proses.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="mt-6 flex justify-between items-center">
+          <button data-tab-target="tab-proses" class="tab-nav-btn text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center space-x-1">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Kembali ke Proses</span>
+          </button>
+          <button id="btn-back-to-data" data-tab-target="tab-data" class="tab-nav-btn px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center space-x-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>Mulai Analisis Baru</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 4. EXTERNAL SCRIPTS AT END OF BODY         -->
+  <!-- ========================================== -->
+  <script src="js/csv_handler.js"></script>
+  <script src="js/wp_engine.js"></script>
+  <script src="js/ui_renderer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
