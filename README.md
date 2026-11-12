@@ -92,7 +92,7 @@ File sampel bawaan [`sample_supplier_default_5.csv`](sample_supplier_default_5.c
 **Hasil Perangkingan Akhir:**
 | Peringkat | Kode | Nama Supplier | Nilai Vektor $S_i$ | Nilai Vektor $V_i$ | Kontribusi % | Status Rekomendasi |
 | :---: | :---: | :--- | :---: | :---: | :---: | :--- |
-| 🥇 **#1** | **S005** | **PT Metalindo Jaya** | **2.402811** | **0.241856** | **24.19%** | **Sangat Direkomendasikan (Juara #1)** |
+| 🥇 **#1** | **S005** | **PT Metalindo Jaya** | **2.402811** | **0.241856** | **24.19%** | **Sangat Direkomendasikan (Peringkat #1)** |
 | 🥈 **#2** | S001 | PT Krakatau Steel | 2.031835 | 0.204515 | 20.45% | Rekomendasi Cadangan (Peringkat #2) |
 | 🥉 **#3** | S002 | PT Gunung Raja Paksi | 2.000000 | 0.201311 | 20.13% | Cukup Direkomendasikan (Peringkat #3) |
 | **#4** | S004 | CV Sumber Makmur Baja | 1.894977 | 0.190740 | 19.07% | Dipertimbangkan |
@@ -126,7 +126,7 @@ spk-wp-apps/
    - `initDropzone(...)`: Handler interaktif drag & drop.
    - `exportToCSV(data, filename)`: Generator file unduhan CSV dengan format standar.
 3. [`js/ui_renderer.js`](js/ui_renderer.js):
-   - Merender 4 tab interaktif, stat cards, tabel preview dengan search filter & pagination, kartu slider kriteria, tabel normalisasi bobot, tabel proses komputasi WP, serta hero card juara #1.
+   - Merender 4 tab interaktif, stat cards, tabel preview dengan search filter & pagination, kartu slider kriteria, tabel normalisasi bobot, tabel proses komputasi WP, serta hero card peringkat #1.
 4. [`js/app.js`](js/app.js):
    - Mengelola state global aplikasi, sinkronisasi perubahan bobot/tipe atribut secara real-time, tab switching, aksi cetak dan reset data.
 
@@ -188,12 +188,12 @@ Di tab ini Anda dapat memverifikasi kebenaran matematis dari metode Weighted Pro
 1. **Langkah 1: Matriks Keputusan ($X_{ij}$)**: Menampilkan rating asli setiap alternatif pada tiap kriteria.
 2. **Langkah 2: Perkalian Pangkat Bobot (Vektor $S_i$)**: Menampilkan formula perkalian pemangkatan terurai beserta total penjumlahan $\sum S_i$.
 3. **Langkah 3: Preferensi Relatif (Vektor $V_i$)**: Menampilkan pembagian nilai $S_i$ terhadap total $\sum S_k$ beserta persentase preferensinya.
-4. Klik tombol **Lihat Hasil Juara & Ranking**.
+4. Klik tombol **Lihat Hasil Peringkat & Ranking**.
 
 ---
 
 #### 🏆 Tab 4: Hasil & Ranking
-1. **Juara Pemenang Utama (Rank #1)**:
+1. **Peringkat Utama (Rank #1)**:
    - Ditampilkan dalam **Glowing Emerald Glass Hero Card** yang memuat Nama Pemenang, Kode Alternatif, Nilai Vektor V, Persentase Preferensi, dan Nilai Vektor S.
 2. **Tabel Perangkingan Lengkap**:
    - Menampilkan urutan prioritas seluruh kandidat dari nomor 1 sampai akhir lengkap dengan medali dan status rekomendasi.

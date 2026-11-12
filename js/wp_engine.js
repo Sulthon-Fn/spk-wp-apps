@@ -293,7 +293,7 @@
       
       var statusBadge = 'Dipertimbangkan';
       if (rankNum === 1) {
-        statusBadge = 'Sangat Direkomendasikan (Juara #1)';
+        statusBadge = 'Sangat Direkomendasikan (Peringkat #1)';
       } else if (rankNum === 2) {
         statusBadge = 'Rekomendasi Cadangan (Peringkat #2)';
       } else if (rankNum === 3) {

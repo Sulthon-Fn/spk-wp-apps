@@ -617,7 +617,7 @@
       return;
     }
 
-    // 1. Render Glowing Emerald Glass Hero Card untuk Juara #1
+    // 1. Render Glowing Emerald Glass Hero Card untuk Peringkat #1
     var winner = ranking[0];
     var winnerCodeEl = document.getElementById('hero-winner-code');
     var winnerNameEl = document.getElementById('hero-winner-name');
